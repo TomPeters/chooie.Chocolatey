@@ -1,25 +1,20 @@
-﻿using System;
-using System.Diagnostics;
-using Chooie.Interface;
+﻿using Chooie.Interface;
+using Chooie.Interface.Helpers;
 
 namespace Chooie.Chocolatey
 {
     public class PackageInstaller
     {
+        private readonly IShellCommandRunner _shellCommandRunner;
+
+        public PackageInstaller(IShellCommandRunner shellCommandRunner)
+        {
+            _shellCommandRunner = shellCommandRunner;
+        }
+
         public void InstallPackage(Package package)
         {
-            Process p = new Process();
-            // Redirect the output stream of the child process.
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = "/C cinst " + package.Name;
-            p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            Console.WriteLine("Running Command");
-            p.Start();
-            p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
+            _shellCommandRunner.RunCommandWihLogging("cinst " + package.Name);
         } 
     }
 }

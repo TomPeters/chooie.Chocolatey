@@ -14,6 +14,8 @@ namespace Chooie.Chocolatey
         public void RegisterDependencies(TinyIoCContainer container)
         {
             container.Register<PackageListRetriver>();
+            container.Register<PackageInstaller>();
+            container.Register<PackageUninstaller>();
         }
     }
 }

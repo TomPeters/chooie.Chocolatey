@@ -1,38 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Chooie.Interface;
+using Chooie.Interface.Helpers;
 
 namespace Chooie.Chocolatey
 {
     public class PackageListRetriver
     {
+        private readonly IShellCommandRunner _shellCommandRunner;
+
+        public PackageListRetriver(IShellCommandRunner shellCommandRunner)
+        {
+            _shellCommandRunner = shellCommandRunner;
+        }
+
         private const string Url = @"http://chocolatey.org/api/v2";
         public IEnumerable<Package> Packages
         {
             get
             {
-                Process p = new Process();
-                // Redirect the output stream of the child process.
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.FileName = "cmd.exe";
-                p.StartInfo.Arguments = "/C clist -source " + Url;
-                p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                Console.WriteLine("Running Command");
-                p.Start();
-                string output = p.StandardOutput.ReadToEnd();
-                p.WaitForExit();
-                Console.WriteLine("Parsing output");
-                return ConvertCommandOutputToPackages(output);
+                return ConvertCommandOutputToPackages(_shellCommandRunner.RunCommand("clist -source " + Url));
             }
         }
 
-        private IEnumerable<Package> ConvertCommandOutputToPackages(string output)
+        private IEnumerable<Package> ConvertCommandOutputToPackages(IEnumerable<string> output)
         {
-            return output.Split('\n').Select(ConvertPackageLineToPackage).Where(p => p != null);
+            return output.Select(ConvertPackageLineToPackage).Where(p => p != null);
         }
 
         private Package ConvertPackageLineToPackage(string packageLine)
