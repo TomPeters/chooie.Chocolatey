@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Chooie.Core;
+using Chooie.Interface;
 
 namespace Chooie.Chocolatey
 {

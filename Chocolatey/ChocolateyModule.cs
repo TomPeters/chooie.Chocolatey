@@ -1,6 +1,6 @@
 ﻿using System;
-using Chooie.Core.PackageManager;
-using Chooie.Core.TinyIoC;
+using Chooie.Interface.PackageManager;
+using Chooie.Interface.TinyIoC;
 
 namespace Chooie.Chocolatey
 {
